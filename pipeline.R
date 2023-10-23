@@ -1,13 +1,32 @@
+# Original loop generated personalised PPI and processed features all together
+# I have seperated these into two different loops below to evaluate more easily
+
+#for(cell_line in all_cell_lines) {  
+#  print('Generate features for ')
+#  print(cell_line)
+#  print('Generate weighted PPI')
+#  source('feature_processing/cell_line_ppi.R')
+#  print('Processing features')
+#  source('feature_processing/process_features.R')
+#}
+
+# Generate weighted PPI networks for all the cell lines
 for(cell_line in all_cell_lines) {  
-  print('Generate features for ')
+  print('Generate weighted PPI for ')#
   print(cell_line)
-  print('Generate weighted PPI')
   source('feature_processing/cell_line_ppi.R')
-  print('Processing features')
+}
+
+# Build PPI network graphs for each cell line and calculate features
+# also labels data when cell line is in training set
+for(cell_line in all_cell_lines) {  
+  print('Processing features for ')
+  print(cell_line)
   source('feature_processing/process_features.R')
 }
 
 print('Completed feature generation')
+
 print('performing analysis')
 
 for(cell_line in train_cell_lines) {
@@ -39,9 +58,3 @@ source('analysis/full_training_validation.R')
 
 
 source('analysis/prediction.R')
-
-
-
-
-
-
