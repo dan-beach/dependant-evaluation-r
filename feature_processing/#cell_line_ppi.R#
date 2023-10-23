@@ -1,0 +1,27 @@
+print(sprintf('Processing %s ppi pertubation', cell_line))
+print('read PPI')
+cl_interactions <- interactions ### Base PPI loaded in pipeline
+
+weights_raw <- read.csv(sprintf('%s/weights/%s_weights.csv', data_dir, tag))
+print(head(weights_raw))
+weights <- melt(weights_raw, c('Name')) %>%
+  select(gene=Name, cl=variable, weight=value) %>%
+  filter(cl==cell_line) 
+print(head(weights))
+
+>%
+                distinct()
+
+cl_interactions <- cl_interactions %>%
+  left_join(weights, by=c('gene1'='gene')) %>%
+  distinct()
+
+if(tag == 'tt_tanh' | tag == 'raw_all_tanh'){ 
+  cl_interactions <- cl_interactions %>%
+    filter(weight < 1)
+}
+
+print(sprintf('Saving ppi with weights for %s', cell_line))   
+print(head(cl_interactions))
+write.table(cl_interactions, sprintf('%s/interactions/processed/%s_ppi_%s.csv', data_dir, cell_line, tag), sep=',', row.names = F)
+

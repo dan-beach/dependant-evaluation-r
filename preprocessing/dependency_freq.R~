@@ -1,0 +1,57 @@
+dependencies <- read.table(sprintf('%s/dependency/processed/dependencies.csv', data_dir), stringsAsFactors = F)
+
+dependencies$disease <-  gsub('^[^_]*_', '\\1', dependencies$cell_line)
+
+head(dependencies)
+
+hist(dependencies$dependency_p)
+
+cls_g <- dependencies %>%
+  na.omit() %>%
+  filter(dependency_p > 0.75) %>%
+  group_by(gene_name) %>%
+  summarise(count=n()) %>%
+  arrange(count)
+
+filter(cls_g, count == 1)
+
+
+d <- dependencies %>%
+  na.omit() %>%
+  filter(dependency_p > 0.75) %>%
+  group_by(disease, gene_name) %>%
+  summarise(count=n()) %>%
+  arrange(desc(count))
+d
+g <- d %>%
+  group_by(gene_name) %>%
+  summarise(occurrences_in_cell_lines=n()) %>%
+  arrange(desc(occurrences_in_cell_lines))
+
+write.table(g, sprintf('%s/supporting_files/processed/dependency_freq.csv', data_dir), sep=',', row.names = F)
+
+ggplot(g) +
+  aes(occurrences_in_cell_lines) +
+  geom_histogram(bins=21, color='cornflowerblue', fill=NA)
+
+g %>% filter(occurrences_in_cell_lines <= 1 )
+
+table(g$occurrences_in_cell_lines)
+
+cl <- dependencies %>%
+  na.omit() %>%
+  filter(dependency_p > 0.75) %>%
+  group_by(cell_line) %>%
+  summarise(count=n()) %>%
+  arrange(desc(count))
+cl
+
+
+
+
+
+
+
+#raw_dependencies <- read.csv(sprintf('%s/dependency/gene_dependency.csv', data_dir), stringsAsFactors = F) ### https://portals.broadinstitute.org/achilles/datasets/18/download/gene_dependency.csv 
+
+
