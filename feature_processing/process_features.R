@@ -1,9 +1,13 @@
-
+# "Process features" function
+# 1) Reads the PPI interactions for this cell line
+# 2) Builds the PPI graph network
+# 3) Extracts topological features for each node
 
 process_features <- function(cell_line, data_dir) {
   
   print(sprintf('Processing features for %s', cell_line))
 
+  # read the personalised for this cell line
   print('read PPI')
   cl_interactions <- read.csv(sprintf('%s/interactions/processed/%s_ppi_%s.csv', data_dir, cell_line, tag), stringsAsFactors = F)
   head(cl_interactions)
@@ -31,7 +35,11 @@ if(tag == 'raw_all_tanh_gss') {
 
   # build graph
   print('Building graph')
+  
+  # get list of genes and assign to 'nodes' 
   nodes <- unique(as.vector(as.matrix(cl_interactions[,c("gene1", "gene2")])))
+  
+  # build a directed graph from the PPI interacion data for this cell line
   g <- graph_from_data_frame(d=cl_interactions, vertices=nodes, directed=T)
   E(g)$weight = cl_interactions$weight
   rm(cl_interactions)
@@ -59,6 +67,9 @@ if(tag == 'raw_all_tanh_gss') {
 
   print('Label genes')
   
+  # If the current cell line is in the list of training cell lines, 
+  # get the dependencies df and: filter for the current cell line, and dependency score > 0.65, and remove NAs
+  # Then convert to a list of the dependent gene_ids for this cell line
   if (cell_line %in% train_cell_lines) {
     print('In training cell lines!')
   c_dep <- dependencies %>%
@@ -70,11 +81,14 @@ if(tag == 'raw_all_tanh_gss') {
   print(head(features))
   print(str(features))
   
+  # add a 'dependent' column to the features df
+  # if the gene column value is in the list of dependenrt genes for this cell line, dependent col = dependent, otherwise = non_dependent
   features <- features %>%
     mutate(dependent = case_when(gene %in% c_dep ~ 'dependent', TRUE ~ 'non_dependent'))
   
   print(table(features$dependent))
   } else {
+    # current cell line isn't in the training set so create a dependent co,umn anbd set value to zero
     print('Not in training cell lines')
     features <- features %>%
       mutate(dependent=0)
@@ -93,8 +107,8 @@ if(tag == 'raw_all_tanh_gss') {
   
 }
 
-#Read ID map and patient mutations
-
+# Call the 'process_features' function
+# Define the output file and write features to file
 features <- process_features(cell_line, data_dir)
 output_features_file <- sprintf("%s/training/%s_features_%s.csv", data_dir, cell_line, tag)
 write.table(features, file=output_features_file, row.names = F, quote = F, sep='\t')

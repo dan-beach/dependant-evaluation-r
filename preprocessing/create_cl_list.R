@@ -1,5 +1,17 @@
-
+# Read the base_weights.csv file and store as weights_raw
+# Where does this come from?
 weights_raw <- read.csv(sprintf('%s/weights/base_weights.csv', data_dir))
+
+# DRB check head 
+head(weights_raw, n=10)
+
+# DRB see what this melt function is doing before it is used below
+weights_cls <- melt(weights_raw, id.vars = 'Name')
+head(weights_cls, n=10)
+
+# Gets a list of distinct cell lines from the weights_raw dataframe
+# First melts from wide to long format, keepoing name as ID value
+# then selects just the cell_line column, gets distinct values and converts to a vector
 weights_cls <- melt(weights_raw, id.vars = 'Name') %>%
   select(gene=Name, cl=variable, weight=value) %>%
   select(cell_line = cl) %>%
@@ -7,16 +19,34 @@ weights_cls <- melt(weights_raw, id.vars = 'Name') %>%
   unlist() %>%
   as.vector()
 
+# print to screen
 weights_cls
 
+# selects lits of cell lines from dependencies datframe
+# gets distinct values and saves as a vector
 dep_cls <- dependencies %>%
   select(cl) %>%
   distinct() %>%
   unlist() %>%
   as.vector()
 
+# print to screen
+dep_cls
+
+# Create dataframes for training cell lines and testing cell lines
+# training_cls = weights_cls cell-lines that are also in the dep_cls list
+# testing_cls = weights_cls cell lines that are not in the dep_cls list
+# set the cell line column namre to cl and add a train column, set to 1 for training cell lines and 0 for testing cell lines
 training_cls <- data.frame(cl=weights_cls[weights_cls %in% dep_cls], train=1)
 testing_cls <- data.frame(cl=weights_cls[!weights_cls %in% dep_cls], train=0)
+
+# DRB see what these look like
+training_cls
+testing_cls
+
+# append testing dataframe to training dataframe
+# add a disease column based on cl column (everything after the underscore)
+# sort (arrange) by disease column in ascending order
 cl_list <- rbind(training_cls, testing_cls) %>%
   mutate(disease = gsub('^[^_]*_', '\\1', cl)) %>%
   arrange(disease)
@@ -28,6 +58,8 @@ cl_list
 cl_list <- cl_list %>%
   filter(cl != 'NCIH460_LUNG')
 
+# DEB see contents of cl_list
+cl_list
 
 # training_cl <-  c("X769P_KIDNEY", "X786O_KIDNEY", "A498_KIDNEY", "A704_KIDNEY", "ACHN_KIDNEY", "ASPC1_PANCREAS", "AU565_BREAST", "BFTC909_KIDNEY", "BT20_BREAST",  "BT474_BREAST","BXPC3_PANCREAS", "CAKI2_KIDNEY", "CAL120_BREAST","CAL51_BREAST", "CAL54_KIDNEY","CFPAC1_PANCREAS", "DANG_PANCREAS","EFM19_BREAST", "HCC1143_BREAST",  "HCC1187_BREAST",    "HCC1395_BREAST", "HCC1428_BREAST",    "HCC1500_BREAST", "HCC1569_BREAST","HCC1599_BREAST", "HCC1806_BREAST", "HCC1937_BREAST", "HCC1954_BREAST", "HCC202_BREAST","HCC2218_BREAST", "HCC38_BREAST", "HCC70_BREAST", "HEKTE_KIDNEY", "HPAC_PANCREAS","HPAFII_PANCREAS", "HS578T_BREAST","HS766T_PANCREAS", "HUPT3_PANCREAS",  "KMRC1_KIDNEY", "KMRC2_KIDNEY","KP2_PANCREAS", "KP4_PANCREAS", "KPL1_BREAST",  "L33_PANCREAS", "MCF7_BREAST", "MDAMB157_BREAST",   "MDAMB175VII_BREAST","MDAMB231_BREAST",   "MDAMB361_BREAST",   "MDAMB415_BREAST",  "MDAMB436_BREAST",   "MDAMB453_BREAST",   "MDAMB468_BREAST",   "MIAPACA2_PANCREAS", "NCIH292_LUNG","NCIH460_LUNG", "OSRC2_KIDNEY", "PANC0327_PANCREAS", "PANC0813_PANCREAS", "PANC1005_PANCREAS", "PSN1_PANCREAS", "QGP1_PANCREAS", "SKRC20_KIDNEY", "SLR20_KIDNEY", "SLR21_KIDNEY", "SLR23_KIDNEY", "SLR24_KIDNEY", "SLR25_KIDNEY", "SLR26_KIDNEY", "SNU349_KIDNEY", "SU8686_PANCREAS",   "SUIT2_PANCREAS",    "T47D_BREAST",  "TUHR10TKB_KIDNEY",  "TUHR14TKB_KIDNEY", "TUHR4TKB_KIDNEY", "UACC812_BREAST", "UOK101_KIDNEY","ZR751_BREAST", "ZR7530_BREAST")
 # 
