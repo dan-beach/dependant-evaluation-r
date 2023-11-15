@@ -28,13 +28,17 @@ if (tag != 'base') {
   cl_interactions <- rbind(cl_interactions, cl_interactions_rev) %>%
                   distinct()
 
-# join the weights df onto the cl df using thr gene1 & genes columns
+# join the weights df onto the cl df using the gene1 & genes columns
 # remove duplicates
   cl_interactions <- cl_interactions %>%
     left_join(weights, by=c('gene1'='gene')) %>%
     distinct()
-    
-  if(tag == 'tt_tanh' | tag == 'raw_all_tanh'){ 
+
+# Filter out interactions where weight = 1
+# This will remove any nodes with LOF or where expression data was missing
+# Need to adjust conditional statement here (or use one of the tags below) to ensure these nodes are removed
+#  if(tag == 'tt_tanh' | tag == 'raw_all_tanh'){ 
+  if(tag == 'tt_tanh' | tag == 'raw_0'){     
     cl_interactions <- cl_interactions %>%
       filter(weight < 1)
   }
