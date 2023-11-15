@@ -1,3 +1,8 @@
+# Processes testing data (gene features) for cell lines in test_cell_lines var
+# Basically the same as the process_training_data.R file, but doesn't split data into 80/20 training/testing subsets
+# As with process_training_data.R the data normalisation functions are commented out currently 
+# Also includes feature_processing function for feature selection which is currently unused
+
 node_features <- c('betweenness', 'constraint', 'closeness', 'coreness', 'degree', 'eccentricity', 'eigen_centrality', 'hub_score',  'neighborhood2.size', 'page_rank')
 feature_list <- c('gene', node_features)
 
@@ -19,7 +24,7 @@ process_training_data <- function(features) {
   
   training <- training %>%
     na.omit()
-
+  
   
   return(training)   
 }

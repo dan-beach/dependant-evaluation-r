@@ -7,7 +7,7 @@ process_features <- function(cell_line, data_dir) {
   
   print(sprintf('Processing features for %s', cell_line))
 
-  # read the personalised for this cell line
+  # read the personalised ppi for this cell line
   print('read PPI')
   cl_interactions <- read.csv(sprintf('%s/interactions/processed/%s_ppi_%s.csv', data_dir, cell_line, tag), stringsAsFactors = F)
   head(cl_interactions)
@@ -30,8 +30,6 @@ if(tag == 'raw_all_tanh_gss') {
   print(head(cl_interactions))
   rm(gosemsim_weights)
 }
-
-
 
   # build graph
   print('Building graph')
@@ -88,7 +86,7 @@ if(tag == 'raw_all_tanh_gss') {
   
   print(table(features$dependent))
   } else {
-    # current cell line isn't in the training set so create a dependent co,umn anbd set value to zero
+    # current cell line isn't in the training set so create a dependent column and set value to zero
     print('Not in training cell lines')
     features <- features %>%
       mutate(dependent=0)

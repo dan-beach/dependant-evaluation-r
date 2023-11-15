@@ -1,8 +1,10 @@
 
 tag = 'raw_0'
 
+# do this for 1, 10, 20, 30 39
 for (cell_line_count in counts) {
 
+  # initlaise data frame
   full_results <- data.frame()
 
   for (column_name in c('V2', 'V4', 'V5')){

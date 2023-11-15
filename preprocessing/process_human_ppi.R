@@ -7,7 +7,7 @@ raw_interactions <- read.table(sprintf('%s/supporting_files/9606.protein.links.d
 ## preprocess interaction data
 # Only keep interactions with experimental evidence > 800
 # Remove '9606.' from protein names in the two protein columns
-# Select justb the protein1 and protein2 cols
+# Select just the protein1 and protein2 cols
 raw_interactions <- raw_interactions %>% 
   filter(experimental > 800)%>% 
   mutate(protein1 = gsub('9606.', "", protein1)) %>%
@@ -18,7 +18,7 @@ raw_interactions <- raw_interactions %>%
 #head(raw_interactions, n=10)
 nrow(raw_interactions)
 
-# Add reverse interacrions - might be a bug because string data already bidirectional?
+# Add reverse interactions - string data already bidirectional?
 print('Add reverse direction interactions')
 vv <- data.frame('protein1'=raw_interactions$protein2, 'protein2'=raw_interactions$protein1)
 raw_interactions <- rbind(raw_interactions, vv)

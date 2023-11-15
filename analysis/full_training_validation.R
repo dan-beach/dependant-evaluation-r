@@ -1,19 +1,27 @@
-tags
-tag='raw_0'
+#tags
+#tag='raw_0'
 
-
+# Initialize a dataframe with cols for feature names 
 training = data.frame("gene"=character(), "betweenness"=numeric(), "constraint"=numeric(), "closeness"=numeric(), "coreness"=numeric(), "degree"=numeric(), "eccentricity"=numeric(), "eigen_centrality"=numeric(),  "hub_score"=numeric(), "neighborhood1.size"=numeric(), "neighborhood2.size"=numeric(), "neighborhood6.size"=numeric(), "d6_to_d2_neighbours"=numeric(), "page_rank"=numeric(), "dependent"=factor())
+
+# For each cell line in the training set, open it's training data csv and add it onto the 'training' dataframe
+# This will produce training super-set
 for(training_cell_line in train_cell_lines) {
   training_temp <- read.table(sprintf('%s/training/%s_training_%s.csv', data_dir, training_cell_line, tag), sep='\t', header = T)
   training = rbind(training, training_temp)
 }
 
 str(training)
+
+# select a subset (not used here)
 n = as.integer(nrow(training)*1)
 training = sample_n(training, size =n)
 
 print('Validation')
 print('Model being trained...')
+
+# Set controls and train model
+# Settings are same as those used in analysis.R and use AdaBoost classifier
 control <- trainControl(method="cv", summaryFunction=twoClassSummary, classProbs=T,
                         savePredictions = T)
 rf <- train(dependent ~ ., data=select(training, -gene), method='ada', trControl=control, tuneLength=5, metric="ROC", preProc=c("center", "scale"))
@@ -23,6 +31,8 @@ acc <- c()
 spec <- c()
 sens <- c()
 
+# For each cell line in train_cell_lines get a list of genes from the testing data and assign to 'testing'
+# This is a validation of the model trained on the super traning set - using testing data form the train_cell_lines lines 
 for(test_cell_line in train_cell_lines) {
   print('validation for:')
   print(test_cell_line)
@@ -30,6 +40,9 @@ for(test_cell_line in train_cell_lines) {
   testing <- testing %>% 
     select(-gene)
   
+  # Predict whether the genes in the 'testing' set are dependent or not using the model trained above
+  # add a 'pred' column to the results and set to 'dependent' if prob > 0.5 | non_dependent
+  # Does not filter genes out of test set if they are also in the training set
   print('performing predictions for validation...')
   validation <- predict(rf, newdata=testing, type="prob")
   print('completed predictions')
@@ -37,14 +50,18 @@ for(test_cell_line in train_cell_lines) {
     mutate(pred = case_when(dependent > 0.5 ~ 'dependent', 
                             TRUE ~ 'non_dependent'))
   
+  # Generate confusion matrix and roc curve
   cm <- confusionMatrix(as.factor(testing$dependent), as.factor(validation$pred))
   roc <- roc(testing$dependent, validation$dependent)
   
+  # save metrics 
   auc <- c(roc$auc, auc)
   acc <- c(cm$overall['Accuracy'], acc)
   spec <- c(cm$byClass['Specificity'], spec)
   sens <- c(cm$byClass['Sensitivity'], sens)
   
+  # generate ROC plot
+  # save to results/{cell_line}_super_roc_{tag}.pdf
   interval = 0.2
   breaks = seq(0, 1, interval)
   roc_plot <- ggplot() +
@@ -61,6 +78,8 @@ for(test_cell_line in train_cell_lines) {
   ggsave(sprintf('%s/results/%s_super_roc_%s.pdf', data_dir, test_cell_line, tag), roc_plot)
 }
 
+# Save results to file 
+# location: results/super_rocs_{tag}.csv
 print(mean(auc))
 print(data.frame(train_cell_lines, auc))
 auc
@@ -69,8 +88,10 @@ write.table(data.frame('cl'=train_cell_lines, 'auc'=auc, 'acc'=acc, 'sens'=sens,
 
 
 
-
 #####   Grades of cell line specific genes  
+
+# Repeat the analysis to predict subset of genes that are dependent in 1, 10 20, 30 39 cell lines
+# Does not filter genes out of test set if they are also in the training set
 
 print('Create cls test set')
 cls_dep <- read.table(sprintf('%s/supporting_files/processed/dependency_freq.csv', data_dir), sep=',', header = T)
@@ -86,7 +107,6 @@ for(cell_line_count in c(counts)) {
   
   for(test_cell_line in train_cell_lines) {
     
-  
     # Filter for genes in a certain number of cell lines
     
     print('validation for:')
@@ -113,6 +133,11 @@ for(cell_line_count in c(counts)) {
     validation <- validation %>% 
       mutate(pred = case_when(dependent > 0.5 ~ 'dependent', 
                               TRUE ~ 'non_dependent'))
+    
+    # If there are two unique predicted classes and two unique actual classes:
+    # Calculate the ROC curve and the Area Under the Curve (AUC)
+    # Extract the accuracy, specificity, and sensitivity from the confusion matrix
+    # plot the ROC curve and save to /results/{cell_line}_super_roc_{tag}.pdf
     
     if (length(unique(as.factor(validation$pred))) == 2 & length(unique(as.factor(testing$dependent))) == 2) {
     
@@ -155,4 +180,3 @@ for(cell_line_count in c(counts)) {
   print('Done!')
 
 }
-
