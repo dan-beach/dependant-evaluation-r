@@ -7,6 +7,7 @@ raw_dependencies <- read.csv(sprintf('%s/dependency/gene_dependency.csv', data_d
 
 # print to screen num rows
 nrow(raw_dependencies)
+ncol(raw_dependencies)
 
 # DRB view first 10 rows or forst 3 cols (very large dataframe)
 raw_dependencies[1:10, 1:3]
@@ -76,10 +77,3 @@ write.table(dependencies_melt, sprintf('%s/dependency/processed/dependencies.csv
 
 # remove these objects from workspace to free up memory
 rm(list = c('dependencies_melt', 'raw_dependencies', 'd', 'gene_map'))
-
-
-
-
-
-
-
