@@ -67,10 +67,10 @@ source('preprocessing/dependency_freq.R')
 for(tag in tags) {
  print(sprintf('###############################%s', tag))
  source('pipeline.R')
- source('analysis/concat_results.R')
+ source('analysis/other_analysis/concat_results.R')
 }
 
 print('Concatenate results')
-source('analysis/plot_results.R')
+source('analysis//other_analysis/plot_results.R')
 
 source('analysis/full_training_validation.R')
