@@ -2,6 +2,8 @@
 # 1) Reads the PPI interactions for this cell line
 # 2) Builds the PPI graph network
 # 3) Extracts topological features for each node
+#cell_line <- 'HCC1428_BREAST'
+#tag = 'raw_2'
 
 process_features <- function(cell_line, data_dir) {
   
@@ -44,24 +46,52 @@ if(tag == 'raw_all_tanh_gss') {
   
   print(sprintf('nodes remaining %s', length(nodes)))
   
-  print('Extract node-wise features')
   features <- data.frame(gene=nodes)
-  features$betweenness <- betweenness(g)
-  features$constraint <- constraint(g)
-  features$closeness <- closeness(g)
-  features$coreness <- coreness(g)
-  features$degree <- degree(g)
-  features$eccentricity <- eccentricity(g)
-  features$eigen_centrality <- eigen_centrality(g)$vector
-  features$hub_score <- hub_score(g)$vector
-  features$neighborhood1.size <- neighborhood.size(g, 1)
-  features$neighborhood2.size <- neighborhood.size(g, 2)
-  #features$neighborhood5.size <- neighborhood.size(g, 5)
-  features$neighborhood6.size <- neighborhood.size(g, 6)
-  #features$d6neighbours <- features$neighborhood6.size - features$neighborhood5.size
-  features$d6_to_d2_neighbours <- features$neighborhood6.size / features$neighborhood2.size
-  # Other neighbourhood stuff
-  features$page_rank <- page_rank(g)$vector
+  
+  # Try inverting some of the weights
+  if (tag == 'raw_2') {
+  
+    # Create a modified graph for calculting some values with inverse weights
+    g_modified <- g
+    E(g_modified)$weight <- 1 - E(g)$weight
+    
+    # Calculations features with a mix of original and modifeid (inverted) weights
+    print('Extract node-wise features')
+    features$betweenness <- betweenness(g, weights = E(g)$weight)
+    features$constraint <- constraint(g_modified)
+    features$closeness <- closeness(g, weights = E(g)$weight)
+    features$coreness <- coreness(g)
+    features$degree <- degree(g)
+    features$eccentricity <- eccentricity(g)
+    features$eigen_centrality <- eigen_centrality(g_modified)$vector
+    features$hub_score <- hub_score(g_modified)$vector
+    features$neighborhood1.size <- neighborhood.size(g, 1)
+    features$neighborhood2.size <- neighborhood.size(g, 2)
+    features$neighborhood6.size <- neighborhood.size(g, 6)
+    features$d6_to_d2_neighbours <- features$neighborhood6.size / features$neighborhood2.size 
+    features$page_rank <- page_rank(g_modified)$vector
+    
+  } else {
+    
+    print('Extract node-wise features')
+    features$betweenness <- betweenness(g)
+    features$constraint <- constraint(g)
+    features$closeness <- closeness(g)
+    features$coreness <- coreness(g)
+    features$degree <- degree(g)
+    features$eccentricity <- eccentricity(g)
+    features$eigen_centrality <- eigen_centrality(g)$vector
+    features$hub_score <- hub_score(g)$vector
+    features$neighborhood1.size <- neighborhood.size(g, 1)
+    features$neighborhood2.size <- neighborhood.size(g, 2)
+    #features$neighborhood5.size <- neighborhood.size(g, 5)
+    features$neighborhood6.size <- neighborhood.size(g, 6)
+    #features$d6neighbours <- features$neighborhood6.size - features$neighborhood5.size
+    features$d6_to_d2_neighbours <- features$neighborhood6.size / features$neighborhood2.size
+    # Other neighbourhood stuff
+    features$page_rank <- page_rank(g)$vector
+
+  }
 
   print('Label genes')
   

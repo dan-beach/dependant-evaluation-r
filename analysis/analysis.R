@@ -39,7 +39,6 @@ mdl <- train(dependent ~ ., data=select(training, -gene), method='ada', trContro
 print('CV results')
 print(mdl)
 
-
 # preProc=c("center", "scale"))
 
 auc <- c()
@@ -95,7 +94,6 @@ for(cell_line_count in counts) {
   #print('performing predictions for validation...')
   
   
-  
   # Make predictions on the new data (cls_testing) using the AdaBoost model trained above
   # type="prob": specifies the type of prediction. When set to "prob", the function will return 
   # the predicted class probabilities instead of the class labels. For a binary classification problem, 
@@ -108,7 +106,6 @@ for(cell_line_count in counts) {
   validation <- validation %>% 
     mutate(pred = case_when(dependent > 0.5 ~ 'dependent', 
                             TRUE ~ 'non_dependent'))
-  
   
   # If there are two unique predicted classes and two unique actual classes:
   # Calculate the confusion matrix, comparing the actual outcomes (cls_testing$dependent) with the predicted outcomes (validation$pred). The results are stored in cm.
