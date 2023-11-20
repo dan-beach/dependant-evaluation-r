@@ -1,12 +1,21 @@
+# Plots ROC AUC values from validation of model trained on super set 
+# on top of histogram of count cell lines that feature gene x
+# Also saves roc by freency data to csv
+
 library(ggplot2)
 library(ggthemes)
 library(reshape2)
 
 
+#tags <- c('raw_0', 'prop_tt_0', 'prop_all_0', 'base')
+#t_labels <- c('Raw Expression', 'Proportional to tissue type', 'Proportional to all', 'Base PPI Network')
 
+tags <- c('raw_0', 'raw_1', 'raw_2', 'base')
+t_labels <- c('Raw Expression','Raw No Nodes Removed','Raw Weight Direction Corrected', 'Base PPI Network')
 
-tags <- c('raw_0', 'prop_tt_0', 'prop_all_0', 'base')
-t_labels <- c('Raw Expression', 'Proportional to tissue type', 'Proportional to all', 'Base PPI Network')
+#tags <- c('raw_0')
+#t_labels <- c('Raw Expression')
+
 
 results <- data.frame('count'=counts) 
 for (tag in tags) {
@@ -26,8 +35,8 @@ names(results) <- c('count', tags)
 results <- melt(results, id.vars = 'count', variable.name = 'tag')
 results
 
-
-gene_distri <- read.csv('~/phd/data/slant_cancer/supporting_files/processed/dependency_freq.csv')
+gene_distri <- read.csv(sprintf('%s/supporting_files/processed/dependency_freq.csv', data_dir))
+#gene_distri <- read.csv('~/phd/data/slant_cancer/supporting_files/processed/dependency_freq.csv')
 gene_distri
 gene_distri <- gene_distri %>% filter(occurrences_in_cell_lines!=0)
 
@@ -57,10 +66,12 @@ p <- ggplot(results) +
 
 
 p
-  
-ggsave('~/phd/data/slant_cancer/results/roc_by_cl_freq_sparse50.pdf', p)
-ggsave('~/phd/data/slant_cancer/results/roc_by_cl_freq_sparse50.png', p)
 
+#sprintf('%s/results/roc_by_cl_freq_sparse50.pdf', data_dir)  
+#ggsave('~/phd/data/slant_cancer/results/roc_by_cl_freq_sparse50.pdf', p)
+#ggsave('~/phd/data/slant_cancer/results/roc_by_cl_freq_sparse50.png', p)
 
+ggsave(sprintf('%s/results/roc_by_cl_freq_sparse50.pdf', data_dir), p)
+ggsave(sprintf('%s/results/roc_by_cl_freq_sparse50.png', data_dir), p)
 
 table(gene_distri$occurrences_in_cell_lines)
