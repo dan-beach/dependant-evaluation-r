@@ -5,7 +5,7 @@
 # DRB - I think this set.seed(0) makes any randomised functions reproducible but it's commented out here. 
 # Later on random subsets of the non_dependent genes are selected. Without this, will a different random subset be selected each time?
 
-# set.seed(0)
+set.seed(0)
 
 # DRB generate a list of features (to be used as column names)
 node_features <- c('betweenness', 'constraint', 'closeness', 'coreness', 'degree', 'eccentricity', 'eigen_centrality', 'hub_score',  'neighborhood2.size', 'page_rank')
