@@ -11,7 +11,17 @@ library(pROC)
 library(doMC)
 registerDoMC(cores = 4)
 
-tags <- c('raw_0')
+
+# all below use the same weights file apart from 'base' which uses an unweighted version
+# base = base ppi without weights
+# raw_0 = weighted ppi with no nodes removed
+# raw_1 = weighted ppi with nodes removed
+# raw_2 = weighted ppi with some of the weights inverted (those not related to shortest path)
+
+tags <- c('raw_2')
+
+#tags <- c('base', 'raw_0', 'raw_1')
+
           # 'raw_0', prop_tt_0', 'prop_all_0',
           # 'raw_1', 'prop_tt_1', 'prop_all_1',
           # 'raw_2', 'prop_tt_2', 'prop_all_2',
@@ -71,6 +81,6 @@ for(tag in tags) {
 }
 
 print('Concatenate results')
-source('analysis//other_analysis/plot_results.R')
+source('analysis/other_analysis/plot_results.R')
 
 source('analysis/full_training_validation.R')
