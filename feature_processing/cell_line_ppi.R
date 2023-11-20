@@ -38,7 +38,7 @@ if (tag != 'base') {
 # This will remove any nodes with LOF or where expression data was missing
 # Need to adjust conditional statement here (or use one of the tags below) to ensure these nodes are removed
 #  if(tag == 'tt_tanh' | tag == 'raw_all_tanh'){ 
-  if(tag == 'tt_tanh' | tag == 'raw_0'){     
+  if(tag == 'tt_tanh' | tag == 'raw_0' | tag == 'raw_2'){     
     cl_interactions <- cl_interactions %>%
       filter(weight < 1)
   }
