@@ -1,5 +1,6 @@
 
-tag <- 'raw_all_tanh'
+#tag <- 'raw_all_tanh'
+tag <- 'raw_2'
 cl <- 'AU565_BREAST'
 
 
