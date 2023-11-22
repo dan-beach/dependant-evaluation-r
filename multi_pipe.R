@@ -17,8 +17,9 @@ registerDoMC(cores = 4)
 # raw_0 = weighted ppi with no nodes removed
 # raw_1 = weighted ppi with nodes removed
 # raw_2 = weighted ppi with some of the weights inverted (those not related to shortest path)
+# raw_3 = weighted ppi - weights recalculated usong Python script from BitBucket
 
-tags <- c('raw_2')
+tags <- c('raw_3')
 
 #tags <- c('base', 'raw_0', 'raw_1')
 
