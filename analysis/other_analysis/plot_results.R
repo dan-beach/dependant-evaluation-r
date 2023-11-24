@@ -10,12 +10,11 @@ library(reshape2)
 #tags <- c('raw_0', 'prop_tt_0', 'prop_all_0', 'base')
 #t_labels <- c('Raw Expression', 'Proportional to tissue type', 'Proportional to all', 'Base PPI Network')
 
-tags <- c('raw_0', 'raw_1', 'raw_2', 'base')
-t_labels <- c('Raw Expression','Raw No Nodes Removed','Raw Weight Direction Corrected', 'Base PPI Network')
+tags <- c('raw_0', 'raw_1', 'raw_2', 'raw_3', 'base')
+t_labels <- c('Raw Expression','Raw No Nodes Removed','Raw Weight Direction Corrected', 'Weights From Python Script', 'Base PPI Network')
 
 #tags <- c('raw_0')
 #t_labels <- c('Raw Expression')
-
 
 results <- data.frame('count'=counts) 
 for (tag in tags) {
