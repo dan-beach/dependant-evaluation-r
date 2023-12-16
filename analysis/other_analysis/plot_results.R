@@ -1,6 +1,6 @@
-# Plots ROC AUC values from validation of model trained on super set 
+# Plots ROC AUC values from validation of model trained on individial cell lines (and tested on th same cell line)
 # on top of histogram of count cell lines that feature gene x
-# Also saves roc by freency data to csv
+# Also saves roc by frequency data to csv
 
 library(ggplot2)
 library(ggthemes)
@@ -10,8 +10,16 @@ library(reshape2)
 #tags <- c('raw_0', 'prop_tt_0', 'prop_all_0', 'base')
 #t_labels <- c('Raw Expression', 'Proportional to tissue type', 'Proportional to all', 'Base PPI Network')
 
-tags <- c('raw_0', 'raw_1', 'raw_2', 'base')
-t_labels <- c('Raw Expression','Raw No Nodes Removed','Raw Weight Direction Corrected', 'Base PPI Network')
+#tags <- c('base', 'raw_0', 'raw_1', 'raw_2', 'reactome_base', 'reactome_0', 'reactome_1')
+#t_labels <- c('String Base', 'String Weighted','String No Nodes Removed','String Weights Inverted', 'Reactome Base', 'Reactome Weighted', 'Reactome Weights Inverted')
+
+tags <- c('base', 'raw_0', 'reactome_base', 'reactome_0', 'reactome_1')
+t_labels <- c('String Base', 'String Weighted', 'Reactome Base','Reactome Weighted', 'Reactome Weights Inverted')
+
+
+#tags <- c('raw_0', 'raw_1', 'raw_2', 'base', 'reactome_base')
+#t_labels <- c('Raw Expression','Raw No Nodes Removed','Raw Weight Direction Corrected', 'Base PPI Network', 'Reactome Base Network')
+
 
 #tags <- c('raw_0')
 #t_labels <- c('Raw Expression')
@@ -22,8 +30,8 @@ for (tag in tags) {
   all_result <- c()
   for(cell_line_count in counts) {
     x <- read.csv(sprintf('%s/results/%s_full_results_%s.csv', data_dir, tag, cell_line_count))
-    print(x$mean_roc[6])
-    all_result <- c(all_result, x$mean_roc[6])
+    print(x$mean_roc[1])
+    all_result <- c(all_result, x$mean_roc[1])
   }
   #print(all_result)
   results <- cbind(results, all_result)
