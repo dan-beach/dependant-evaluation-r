@@ -8,7 +8,7 @@ cl_interactions <- interactions ### Base PPI loaded in pipeline
 head(cl_interactions)
   
 # if not using the base ppi (tag == base), load the correct weights file
-if (tag != 'base') {
+if (tag != 'base' && tag != 'reactome_base') {
   weights_raw <- read.csv(sprintf('%s/weights/%s_weights.csv', data_dir, tag))
   print(head(weights_raw))
   
@@ -21,12 +21,16 @@ if (tag != 'base') {
     select(gene=Name, cl=variable, weight=value) %>%
     filter(cl==cell_line) 
   print(head(weights))
-
-# add the reverse interactions and assign to cl_interactions_rev
-  print('Create reverse interactions')
-  cl_interactions_rev <- data.frame('gene1' = cl_interactions$gene2, 'gene2' = cl_interactions$gene1)
-  cl_interactions <- rbind(cl_interactions, cl_interactions_rev) %>%
-                  distinct()
+  
+# Only add the reverse interactions if not reactome
+  if (!grepl("reactome", tag)) {
+    
+    # add the reverse interactions and assign to cl_interactions_rev
+    print('Create reverse interactions')
+    cl_interactions_rev <- data.frame('gene1' = cl_interactions$gene2, 'gene2' = cl_interactions$gene1)
+    cl_interactions <- rbind(cl_interactions, cl_interactions_rev) %>%
+      distinct()
+  }
 
 # join the weights df onto the cl df using the gene1 & genes columns
 # remove duplicates
