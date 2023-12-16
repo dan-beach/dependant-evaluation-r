@@ -19,7 +19,9 @@ registerDoMC(cores = 4)
 # raw_2 = weighted ppi with some of the weights inverted (those not related to shortest path)
 # raw_3 = weighted ppi - weights recalculated usong Python script from BitBucket
 
-tags <- c('raw_3')
+#tags <- c('reactome_base', 'reactome_0', 'reactome_1')
+
+tags <- c('reactome_1')
 
 #tags <- c('base', 'raw_0', 'raw_1')
 
@@ -57,10 +59,11 @@ train_cell_lines <- cell_lines %>% filter(train==1) %>% select(cl) %>% unlist() 
 test_cell_lines <- cell_lines %>% filter(train==0) %>% select(cl) %>% unlist() %>% as.vector()
 
 # Process the base PPI
-source('preprocessing/process_human_ppi.R')
+#source('preprocessing/process_human_ppi.R')
 
 # Load the processed PPI as interactions
-interactions <- read.csv(sprintf('%s/interactions/processed/base_ppi.csv', data_dir), stringsAsFactors = F)
+#interactions <- read.csv(sprintf('%s/interactions/processed/base_ppi.csv', data_dir), stringsAsFactors = F)
+interactions <- read.csv(sprintf('%s/interactions/processed/reactome_ppi.csv', data_dir), stringsAsFactors = F)
 
 ### Remove x% of PPIN
 # This is only done to test how robust the models are to incomplete ppi networks
