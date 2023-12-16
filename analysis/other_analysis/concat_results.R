@@ -1,4 +1,4 @@
-#tag = 'raw_0'
+tag = 'reactome_1'
 #cell_line_count = 1
 
 # do this for 1, 10, 20, 30 39
@@ -31,8 +31,8 @@ for (column_name in c('V2', 'V4', 'V5')){
   
      
   #### Get average within cl roc
-  df_singles <- df[20:nrow(df), 20:ncol(df)]
-  #df_singles <- df[1:nrow(df), 2:ncol(df)]
+  #df_singles <- df[20:nrow(df), 20:ncol(df)]
+  df_singles <- df[1:nrow(df), 2:ncol(df)]
   View(df_singles)
   cl_roc <- c()
   for(i in (1:nrow(df_singles))){
