@@ -49,7 +49,7 @@ if(tag == 'raw_all_tanh_gss') {
   features <- data.frame(gene=nodes)
   
   # Try inverting some of the weights
-  if (tag == 'raw_2') {
+  if (tag == 'raw_2'||tag == 'reactome_1') {
   
     # Create a modified graph for calculting some values with inverse weights
     g_modified <- g
