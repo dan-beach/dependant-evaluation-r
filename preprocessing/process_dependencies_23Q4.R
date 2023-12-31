@@ -90,11 +90,11 @@ dependencies_melt <- dependencies_melt %>%
   select(cl=cell_line, gene_id=Gene.ID, gene_name=gene, dependency_p) %>%
   distinct()
 
-
 head(dependencies_melt)
 
 # save this as the processed dependancies csv file
-write.table(dependencies_melt, sprintf('%s/dependency/processed/dependencies_23Q4.csv', data_dir))
+write.table(dependencies_melt, sprintf('%s/dependency/processed/dependencies_23q4.csv', data_dir))
 
 # remove these objects from workspace to free up memory
 #rm(list = c('dependencies_melt', 'raw_dependencies', 'd', 'gene_map', 'model', 'dep_model_joined'))
+rm(list = c('d', 'gene_map', 'model', 'dep_model_joined'))

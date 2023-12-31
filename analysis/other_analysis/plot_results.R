@@ -16,7 +16,6 @@ library(reshape2)
 tags <- c('base', 'raw_0', 'reactome_base', 'reactome_0', 'reactome_1')
 t_labels <- c('String Base', 'String Weighted', 'Reactome Base','Reactome Weighted', 'Reactome Weights Inverted')
 
-
 #tags <- c('raw_0', 'raw_1', 'raw_2', 'base', 'reactome_base')
 #t_labels <- c('Raw Expression','Raw No Nodes Removed','Raw Weight Direction Corrected', 'Base PPI Network', 'Reactome Base Network')
 

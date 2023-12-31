@@ -8,6 +8,10 @@ for (cell_line_count in counts) {
 full_results <- data.frame()
 
 # For each column name
+# Cols are for Roc, Sens, Spec
+# Output of this is hard to decipher but rows without an appended number (eg. 'Single') refer to ROC (avg, min, max)
+# Rows with a 1 appended (eg. 'Single1') refer to Sens (avg, min, max)
+# Rows with a 2 appended (eg. 'Single2') refer to Spec (avg, min, max)
 for (column_name in c('V2', 'V4', 'V5')){
   df <- data_frame(cl=c(train_cell_lines))
   
