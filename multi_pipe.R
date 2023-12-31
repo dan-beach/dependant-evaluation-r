@@ -36,7 +36,7 @@ counts = c(1, 10, 20, 30, 39)
 
 print('Load files for feature processing')
 #data_dir <- '/its/home/gb293/phd/data/slant_cancer'
-data_dir <- 'data'
+data_dir <- 'data/reactome_23q4/'
 
 # read genes to proteins ID map and store as id_map
 # rename the columns
