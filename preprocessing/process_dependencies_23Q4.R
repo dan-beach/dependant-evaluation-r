@@ -10,7 +10,6 @@ model_data <- read.csv(sprintf('%s/dependency/Model.csv', data_dir), stringsAsFa
 # print to screen num rows
 nrow(raw_dependencies)
 ncol(raw_dependencies)
-
 View(head(model_data))
 
 # DRB view first 10 rows of first 3 cols (very large dataframe)
@@ -73,28 +72,45 @@ dependencies_melt <- dependencies_melt %>%
 # DRB check the first 10 rows
 head(dependencies_melt, n=10)
 
-# This step not needed for reactome!
-# Select the Gene.ID and Associated.Gene.Name cols from id_map dataframe
-# and save as gene_map dataframe 
-gene_map <- id_map %>%
-  select(Gene.ID, Associated.Gene.Name)
+#####
+# Left join to gene_map section below commented out
+# We are not using ENSG gene_id for Reactome and this join was adding nearly 2 million more rows of data!
+#####
 
-# DRB check the first 10 rows
-head(gene_map, n=10)
+# # Check num rows before left join
+# nrow(dependencies_melt)
 
-# Left join the gene_map df to dependencies_melt on dependencies_melt$genes = gene_map$Associated.Gene.Name
-# rename cell_line = cl, Gene.ID = gene_id, gene = gene_name
-# select these and the depdendency_p column and remove duplicates
-dependencies_melt <- dependencies_melt %>%
-  left_join(gene_map, c('gene' = 'Associated.Gene.Name')) %>%
-  select(cl=cell_line, gene_id=Gene.ID, gene_name=gene, dependency_p) %>%
-  distinct()
+# # This step not needed for reactome!
+# # Select the Gene.ID and Associated.Gene.Name cols from id_map dataframe
+# # and save as gene_map dataframe 
+# gene_map <- id_map %>%
+#   select(Gene.ID, Associated.Gene.Name)
 
-head(dependencies_melt)
+# # DRB check the first 10 rows
+# head(gene_map, n=10)
 
-# save this as the processed dependancies csv file
-write.table(dependencies_melt, sprintf('%s/dependency/processed/dependencies_23q4.csv', data_dir))
+# # Left join the gene_map df to dependencies_melt on dependencies_melt$genes = gene_map$Associated.Gene.Name
+# # rename cell_line = cl, Gene.ID = gene_id, gene = gene_name
+# # select these and the depdendency_p column and remove duplicates
+# dependencies_melt <- dependencies_melt %>%
+#   left_join(gene_map, c('gene' = 'Associated.Gene.Name')) %>%
+#   select(cl=cell_line, gene_id=Gene.ID, gene_name=gene, dependency_p) %>%
+#   distinct()
+# 
+# head(dependencies_melt)
+# 
+# # Check num rows after left join
+# nrow(dependencies_melt)
+
+
+# If left join above commented out, we need to select and rename the columns
+ dependencies_melt <- dependencies_melt %>%
+   select(cl=cell_line, gene_name=gene, dependency_p) %>%
+   distinct()
+
+# save this as the processed dependencies csv file
+write.table(dependencies_melt, sprintf('%s/dependency/processed/dependencies.csv', data_dir))
 
 # remove these objects from workspace to free up memory
-#rm(list = c('dependencies_melt', 'raw_dependencies', 'd', 'gene_map', 'model', 'dep_model_joined'))
-rm(list = c('d', 'gene_map', 'model', 'dep_model_joined'))
+#rm(list = c('d', 'gene_map', 'dep_model_joined'))
+rm(list = c('dependencies_melt', 'raw_dependencies', 'd', 'dep_model_joined'))
