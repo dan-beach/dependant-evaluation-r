@@ -2,6 +2,9 @@
 # Where does this come from?
 weights_raw <- read.csv(sprintf('%s/weights/base_weights.csv', data_dir))
 
+# Check col names
+colnames(weights_raw)
+
 # DRB check head 
 head(weights_raw, n=10)
 
@@ -20,7 +23,7 @@ weights_cls <- melt(weights_raw, id.vars = 'Name') %>%
   as.vector()
 
 # print to screen
-weights_cls
+head(weights_cls)
 
 # selects list of cell lines from dependencies dataframe
 # gets distinct values and saves as a vector
@@ -31,14 +34,26 @@ dep_cls <- dependencies %>%
   as.vector()
 
 # print to screen
-dep_cls
+head(dep_cls)
 
 # Create dataframes for training cell lines and testing cell lines
 # training_cls = weights_cls cell-lines that are also in the dep_cls list
 # testing_cls = weights_cls cell lines that are not in the dep_cls list
 # set the cell line column name to cl and add a train column, set to 1 for training cell lines and 0 for testing cell lines
+
+########
+# While testing, manually set these to keep num lines small
+# And handle the lack of test lines selected
+########
+
 training_cls <- data.frame(cl=weights_cls[weights_cls %in% dep_cls], train=1)
-testing_cls <- data.frame(cl=weights_cls[!weights_cls %in% dep_cls], train=0)
+#testing_cls <- data.frame(cl=weights_cls[!weights_cls %in% dep_cls], train=0)
+
+#training_cls <- data.frame(cl='HCC1428_BREAST', train=1)
+#debug_training_cls <- c('HCC1428_BREAST', 'KPL1_BREAST', 'MDAMB157_BREAST', 'ZR751_BREAST', 'AU565_BREAST')
+
+#training_cls <- data.frame(cl=debug_training_cls, train=1)
+testing_cls <- data.frame(cl='CAL51_BREAST', train=0)
 
 # DRB see what these look like
 training_cls
@@ -70,23 +85,24 @@ cl_list
 
 write.table(cl_list, sprintf('%s/supporting_files/processed/cl_list.csv', data_dir), row.names = F, col.names = T, sep=',')
 
-
 rm(weights_raw, cl_list)
 
-#### Manual Testing ####
-# HCC1428_BREAST ends up as a training cell line, HCC38_BREAST does not
-# I think this is because HCC1428_BREAST was in depmap dependancy data but HCC38_BREAST wasn't
-# Check quickly here if this is the case (Note: my assumption is correct)
-# Rerun process_dependencies.R with last line commented out to ensure dependencies and dependencies_melt dataframes have values
-
-filtered_df <- dependencies %>% 
-  #filter(cl == 'HCC1428_BREAST')
-  filter(cl == 'HCC38_BREAST')
-
-filtered_df 
-
-filtered_df <- dependencies_melt %>% 
-  #filter(cell_line == 'HCC1428_BREAST')
-  filter(cell_line == 'HCC38_BREAST')
-
-filtered_df
+# #### Manual Testing ####
+# # HCC1428_BREAST ends up as a training cell line, HCC38_BREAST does not
+# # I think this is because HCC1428_BREAST was in depmap dependancy data but HCC38_BREAST wasn't
+# # Check quickly here if this is the case (Note: my assumption is correct)
+# # Rerun process_dependencies.R with last line commented out to ensure dependencies and dependencies_melt dataframes have values
+# 
+# filtered_df <- dependencies %>% 
+#   #filter(cl == 'HCC1428_BREAST')
+#   filter(cl == 'HCC38_BREAST')
+# 
+# filtered_df 
+# 
+# filtered_df <- dependencies_melt %>% 
+#   #filter(cl == 'HCC1428_BREAST')
+#   filter(cl == 'HCC38_BREAST')
+# 
+# filtered_df
+# 
+# rm(list = c('dependencies_melt', 'raw_dependencies', 'filtered_df'))
