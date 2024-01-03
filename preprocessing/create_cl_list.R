@@ -73,20 +73,20 @@ write.table(cl_list, sprintf('%s/supporting_files/processed/cl_list.csv', data_d
 
 rm(weights_raw, cl_list)
 
-#### Manual Testing ####
-# HCC1428_BREAST ends up as a training cell line, HCC38_BREAST does not
-# I think this is because HCC1428_BREAST was in depmap dependancy data but HCC38_BREAST wasn't
-# Check quickly here if this is the case (Note: my assumption is correct)
-# Rerun process_dependencies.R with last line commented out to ensure dependencies and dependencies_melt dataframes have values
-
-filtered_df <- dependencies %>% 
-  #filter(cl == 'HCC1428_BREAST')
-  filter(cl == 'HCC38_BREAST')
-
-filtered_df 
-
-filtered_df <- dependencies_melt %>% 
-  #filter(cell_line == 'HCC1428_BREAST')
-  filter(cell_line == 'HCC38_BREAST')
-
-filtered_df
+# #### Manual Testing ####
+# # HCC1428_BREAST ends up as a training cell line, HCC38_BREAST does not
+# # I think this is because HCC1428_BREAST was in depmap dependancy data but HCC38_BREAST wasn't
+# # Check quickly here if this is the case (Note: my assumption is correct)
+# # Rerun process_dependencies.R with last line commented out to ensure dependencies and dependencies_melt dataframes have values
+# 
+# filtered_df <- dependencies %>% 
+#   #filter(cl == 'HCC1428_BREAST')
+#   filter(cl == 'HCC38_BREAST')
+# 
+# filtered_df 
+# 
+# filtered_df <- dependencies_melt %>% 
+#   #filter(cell_line == 'HCC1428_BREAST')
+#   filter(cell_line == 'HCC38_BREAST')
+# 
+# filtered_df
