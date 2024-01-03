@@ -1,5 +1,5 @@
 # Set this here so I can run the file directly instead of inside the loop in multi_pipe.R 
-#tag <- c('raw_0')
+#tag <- c('base')
 
 # Original loop generated personalised PPI and processed features all together
 # I have seperated these into two different loops below to evaluate more easily
@@ -43,9 +43,10 @@ for(cell_line in test_cell_lines) {
   print(cell_line)
   source('feature_processing/process_testing_data.R')
 }
+
 # Train RF model on each cell line individually and estimate feature importance for each cell line
 # Then test train will one cell line and test against all other cell lines one by one, and for each also 
-# test perfommace when prediciting rare and common essential genes (1, 10, 20, 30, 39)
+# test performance when predicting rare and common essential genes (1, 10, 20, 30, 39)
 # The model trained in analysis.R tests 5 iterations and selects the best one based on the ROC
 # Select the highest ROC here and add to cv_roc for each cell line 
 cv_roc <- c()
