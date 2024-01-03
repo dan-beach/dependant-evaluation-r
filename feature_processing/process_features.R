@@ -1,9 +1,10 @@
 # "Process features" function
-# 1) Reads the PPI interactions for this cell line
-# 2) Builds the PPI graph network
-# 3) Extracts topological features for each node
+# 1) Read the PPI interactions for this cell line
+# 2) Build the PPI graph network
+# 3) Extract topological features for each node
+
 #cell_line <- 'HCC1428_BREAST'
-#tag = 'raw_2'
+#tag = "base"
 
 process_features <- function(cell_line, data_dir) {
   
@@ -97,25 +98,30 @@ if(tag == 'raw_all_tanh_gss') {
   
   # If the current cell line is in the list of training cell lines, 
   # get the dependencies df and: filter for the current cell line, and dependency score > 0.65, and remove NAs
-  # Then convert to a list of the dependent gene_ids for this cell line
+  # Then convert to a list of the dependent gene_names for this cell line
   if (cell_line %in% train_cell_lines) {
     print('In training cell lines!')
-  c_dep <- dependencies %>%
-    filter(cl == cell_line) %>%
-    filter(dependency_p > 0.65) %>%
-    na.omit()
-  c_dep <- as.vector(unlist(c_dep$gene_id))
-  print(head(c_dep))
-  print(head(features))
-  print(str(features))
-  
-  # add a 'dependent' column to the features df
-  # if the gene column value is in the list of dependenrt genes for this cell line, dependent col = dependent, otherwise = non_dependent
-  features <- features %>%
-    mutate(dependent = case_when(gene %in% c_dep ~ 'dependent', TRUE ~ 'non_dependent'))
-  
-  print(table(features$dependent))
+    
+    c_dep <- dependencies %>%
+      filter(cl == cell_line) %>%
+      filter(dependency_p > 0.65) %>%
+      na.omit()
+    
+    c_dep <- as.vector(unlist(c_dep$gene_name))
+    
+    print(head(c_dep))
+    print(head(features))
+    print(str(features))
+    
+    # add a 'dependent' column to the features df
+    # if the gene column value is in the list of dependent genes for this cell line, dependent col = dependent, otherwise = non_dependent
+    features <- features %>%
+      mutate(dependent = case_when(gene %in% c_dep ~ 'dependent', TRUE ~ 'non_dependent'))
+    
+    print(table(features$dependent))
+    
   } else {
+    
     # current cell line isn't in the training set so create a dependent column and set value to zero
     print('Not in training cell lines')
     features <- features %>%
@@ -123,7 +129,6 @@ if(tag == 'raw_all_tanh_gss') {
   }
   
   print('Done')
-  
   
   #print('Add some data to graph and save for visualisation')
   #V(g)$pagerank <- features$page_rank
@@ -136,9 +141,8 @@ if(tag == 'raw_all_tanh_gss') {
 }
 
 # Call the 'process_features' function
-# Define the output file and write features to file
 features <- process_features(cell_line, data_dir)
+
+# Define the output file and write features to file
 output_features_file <- sprintf("%s/training/%s_features_%s.csv", data_dir, cell_line, tag)
 write.table(features, file=output_features_file, row.names = F, quote = F, sep='\t')
-
-

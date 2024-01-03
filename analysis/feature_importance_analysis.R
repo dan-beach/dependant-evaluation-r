@@ -1,6 +1,7 @@
 # DRB assign cell_line and tag to run script outside of pipeline loop
 #cell_line <- 'HCC1428_BREAST' # needs to be in 'train_cell_line'
-#tag <- c('raw_0')
+#tag <- c('base')
+set.seed(0)
 
 # Read the training data file for this cell line and assign to 'training'
 training <- read.table(sprintf('%s/training/%s_training_%s.csv', data_dir, cell_line, tag), sep='\t', header = T)

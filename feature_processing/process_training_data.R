@@ -1,13 +1,14 @@
-# DRB assign cell_line and tag to run script outside of pipline loop
-#cell_line <- 'HCC1428_BREAST' # needs to be in 'train_cell_line'
-#tag <- c('raw_0')
+# Assign cell_line and tag to run script outside of pipline loop
 
-# DRB - I think this set.seed(0) makes any randomised functions reproducible but it's commented out here. 
+#cell_line <- 'HCC1428_BREAST' # needs to be in 'train_cell_line'
+#tag <- c('base')
+
+# Set.seed(0) makes any randomised functions reproducible (but was initially commented out here). 
 # Later on random subsets of the non_dependent genes are selected. Without this, will a different random subset be selected each time?
 
 set.seed(0)
 
-# DRB generate a list of features (to be used as column names)
+# Generate a list of features (to be used as column names)
 node_features <- c('betweenness', 'constraint', 'closeness', 'coreness', 'degree', 'eccentricity', 'eigen_centrality', 'hub_score',  'neighborhood2.size', 'page_rank')
 #pair_features <- c('cohesion')
 feature_list <- c('gene', node_features, 'dependent')

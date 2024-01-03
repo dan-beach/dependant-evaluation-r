@@ -1,4 +1,4 @@
-tag = 'reactome_1'
+#tag = 'base'
 #cell_line_count = 1
 
 # do this for 1, 10, 20, 30 39
@@ -8,7 +8,7 @@ for (cell_line_count in counts) {
 full_results <- data.frame()
 
 # For each column name
-# Cols are for Roc, Sens, Spec
+# Cols are for AUC, Sens, Spec - but not accuracy
 # Output of this is hard to decipher but rows without an appended number (eg. 'Single') refer to ROC (avg, min, max)
 # Rows with a 1 appended (eg. 'Single1') refer to Sens (avg, min, max)
 # Rows with a 2 appended (eg. 'Single2') refer to Spec (avg, min, max)
@@ -78,4 +78,3 @@ print(full_results)
 write.csv(full_results, sprintf('%s/results/%s_full_results_%s.csv', data_dir, tag, cell_line_count))
 
 }
-

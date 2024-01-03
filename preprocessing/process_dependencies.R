@@ -9,7 +9,7 @@ raw_dependencies <- read.csv(sprintf('%s/dependency/gene_dependency.csv', data_d
 nrow(raw_dependencies)
 ncol(raw_dependencies)
 
-# DRB view first 10 rows or forst 3 cols (very large dataframe)
+# DRB view first 10 rows or first 3 cols (very large dataframe)
 raw_dependencies[1:10, 1:3]
 
 # convert data frame from wide to long format
@@ -64,6 +64,7 @@ gene_map <- id_map %>%
 # DRB check the first 10 rows
 head(gene_map, n=10)
 
+# This part is redundant for Reactome but leave it here for now. We dont need the ENST gene IDs
 # Left join the gene_map df to dependencies_melt on dependencies_melt$genes = gene_map$Associated.Gene.Name
 # rename cell_line = cl, Gene.ID = gene_id, gene = gene_name
 # select these and the depdendency_p column and remove duplicates
@@ -76,4 +77,4 @@ dependencies_melt <- dependencies_melt %>%
 write.table(dependencies_melt, sprintf('%s/dependency/processed/dependencies.csv', data_dir))
 
 # remove these objects from workspace to free up memory
-rm(list = c('dependencies_melt', 'raw_dependencies', 'd', 'gene_map'))
+#rm(list = c('dependencies_melt', 'raw_dependencies', 'd', 'gene_map'))

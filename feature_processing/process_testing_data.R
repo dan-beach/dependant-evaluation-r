@@ -3,6 +3,9 @@
 # As with process_training_data.R the data normalisation functions are commented out currently 
 # Also includes feature_processing function for feature selection which is currently unused
 
+#cell_line <- 'CAL51_BREAST' # needs to be in 'testy_cell_line'
+#tag <- c('base')
+
 node_features <- c('betweenness', 'constraint', 'closeness', 'coreness', 'degree', 'eccentricity', 'eigen_centrality', 'hub_score',  'neighborhood2.size', 'page_rank')
 feature_list <- c('gene', node_features)
 
@@ -24,7 +27,6 @@ process_training_data <- function(features) {
   
   training <- training %>%
     na.omit()
-  
   
   return(training)   
 }
