@@ -1,7 +1,7 @@
 ## vars below used to run file outside of pipline.R loop
 #cell_line <- 'HCC1428_BREAST'
-#tag = "raw_0"
-  
+#tag = "base"
+
 print(sprintf('Processing %s ppi pertubation', cell_line))
 print('read PPI')
 cl_interactions <- interactions ### Base PPI loaded in pipeline
@@ -21,16 +21,16 @@ if (tag != 'base' && tag != 'reactome_base') {
     select(gene=Name, cl=variable, weight=value) %>%
     filter(cl==cell_line) 
   print(head(weights))
+
+## We don't want to add reverse interactions for reactome so comment this out
   
-# Only add the reverse interactions if not reactome
-  if (!grepl("reactome", tag)) {
-    
-    # add the reverse interactions and assign to cl_interactions_rev
-    print('Create reverse interactions')
-    cl_interactions_rev <- data.frame('gene1' = cl_interactions$gene2, 'gene2' = cl_interactions$gene1)
-    cl_interactions <- rbind(cl_interactions, cl_interactions_rev) %>%
-      distinct()
-  }
+#  if (!grepl("reactome", tag)) {
+#    # add the reverse interactions and assign to cl_interactions_rev
+#    print('Create reverse interactions')
+#    cl_interactions_rev <- data.frame('gene1' = cl_interactions$gene2, 'gene2' = cl_interactions$gene1)
+#    cl_interactions <- rbind(cl_interactions, cl_interactions_rev) %>%
+#      distinct()
+#  }
 
 # join the weights df onto the cl df using the gene1 & genes columns
 # remove duplicates
@@ -40,13 +40,18 @@ if (tag != 'base' && tag != 'reactome_base') {
 
 # Filter out interactions where weight = 1
 # This will remove any nodes with LOF or where expression data was missing
-# Need to adjust conditional statement here (or use one of the tags below) to ensure these nodes are removed
-# EDIT - adjusted to always remove nodes unless tag = raw_1 
-#  if(tag == 'tt_tanh' | tag == 'raw_all_tanh'){ 
-  if(tag != 'raw_1'){     
+# Don't do this for now
+  
+  #if(tag != 'raw_1'){     
+  # cl_interactions <- cl_interactions %>%
+  #  filter(weight < 1)
+  #}
+  
+# Filter out interactions where weight = 0
+# This will remove any nodes with LOF
+  
     cl_interactions <- cl_interactions %>%
       filter(weight < 1)
-  }
   
 } else {
   cl_interactions <- cl_interactions %>%
